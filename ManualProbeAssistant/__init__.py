@@ -11,7 +11,7 @@ from __future__ import absolute_import
 
 import octoprint.plugin
 
-class ManualprobeassistantPlugin(octoprint.plugin.SettingsPlugin,
+class ManualProbeAssistantPlugin(octoprint.plugin.SettingsPlugin,
                                  octoprint.plugin.AssetPlugin,
                                  octoprint.plugin.TemplatePlugin):
 
@@ -41,17 +41,17 @@ class ManualprobeassistantPlugin(octoprint.plugin.SettingsPlugin,
 		# for details.
 		return dict(
 			ManualProbeAssistant=dict(
-				displayName="Manualprobeassistant Plugin",
+				displayName="ManualProbeAssistant Plugin",
 				displayVersion=self._plugin_version,
 
 				# version check: github repository
 				type="github_release",
 				user="jorender",
-				repo="OctoPrint-Manualprobeassistant",
+				repo="ManualProbeAssistant",
 				current=self._plugin_version,
 
 				# update method: pip
-				pip="https://github.com/jorender/OctoPrint-Manualprobeassistant/archive/{target_version}.zip"
+				pip="https://github.com/jorender/ManualProbeAssistant/archive/{target_version}.zip"
 			)
 		)
 
@@ -59,11 +59,11 @@ class ManualprobeassistantPlugin(octoprint.plugin.SettingsPlugin,
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
 # ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
 # can be overwritten via __plugin_xyz__ control properties. See the documentation for that.
-__plugin_name__ = "Manualprobeassistant Plugin"
+__plugin_name__ = "ManualProbeAssistant Plugin"
 
 def __plugin_load__():
 	global __plugin_implementation__
-	__plugin_implementation__ = ManualprobeassistantPlugin()
+	__plugin_implementation__ = ManualProbeAssistantPlugin()
 
 	global __plugin_hooks__
 	__plugin_hooks__ = {

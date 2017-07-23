@@ -1,4 +1,4 @@
 include README.md
-recursive-include octoprint_ManualProbeAssistant/templates *
-recursive-include octoprint_ManualProbeAssistant/translations *
-recursive-include octoprint_ManualProbeAssistant/static *
+recursive-include OctoPrint_ManualProbeAssistant/templates *
+recursive-include OctoPrint_ManualProbeAssistant/translations *
+recursive-include OctoPrint_ManualProbeAssistant/static *

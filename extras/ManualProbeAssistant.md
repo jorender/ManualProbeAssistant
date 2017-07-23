@@ -2,7 +2,7 @@
 layout: plugin
 
 id: ManualProbeAssistant
-title: OctoPrint-Manualprobeassistant
+title: ManualProbeAssistant
 description: An plug-in to assist in  leveling
 author: Joshua Orender
 license: AGPLv3
@@ -10,9 +10,9 @@ license: AGPLv3
 # TODO
 date: today's date in format YYYY-MM-DD, e.g. 2015-04-21
 
-homepage: https://github.com/jorender/OctoPrint-Manualprobeassistant
-source: https://github.com/jorender/OctoPrint-Manualprobeassistant
-archive: https://github.com/jorender/OctoPrint-Manualprobeassistant/archive/master.zip
+homepage: https://github.com/jorender/ManualProbeAssistant
+source: https://github.com/jorender/ManualProbeAssistant
+archive: https://github.com/jorender/ManualProbeAssistant/archive/master.zip
 
 # TODO
 # Set this to true if your plugin uses the dependency_links setup parameter to include

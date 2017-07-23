@@ -1,11 +1,11 @@
 /*
- * View model for OctoPrint-Manualprobeassistant
+ * View model for ManualProbeAssistant
  *
  * Author: Joshua Orender
  * License: AGPLv3
  */
 $(function() {
-    function ManualprobeassistantViewModel(parameters) {
+    function ManualProbeAssistantViewModel(parameters) {
         var self = this;
 
         // assign the injected parameters, e.g.:
@@ -17,7 +17,7 @@ $(function() {
 
     // view model class, parameters for constructor, container to bind to
     OCTOPRINT_VIEWMODELS.push([
-        ManualprobeassistantViewModel,
+        ManualProbeAssistantViewModel,
 
         // e.g. loginStateViewModel, settingsViewModel, ...
         [ /* "loginStateViewModel", "settingsViewModel" */ ],
