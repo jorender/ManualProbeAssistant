@@ -8,6 +8,17 @@ $(function() {
     function ManualProbeAssistantViewModel(parameters) {
         var self = this;
 
+        self._createPoint = function(){
+            return {
+                idx: ko.observable(),
+                x: ko.observable(),
+                y: ko.observable(),
+                error:ko.observable()
+            }
+        }
+
+        self.probe_points = ko.observableArray([]);
+
         self.delta_l = ko.observable();
         self.delta_r = ko.observable();
         self.delta_z = ko.observable();
@@ -15,6 +26,33 @@ $(function() {
         self.trim_x = ko.observable();
         self.trim_y = ko.observable();
         self.trim_z = ko.observable();
+        self.bed_radius = ko.observable();
+
+        self.getProbePoints = function(){
+            var points = self.probe_points();
+
+            if(points.length == 0){
+                points[0] = self._createPoint();
+            }
+
+            points[0]["idx"](1);
+            points[0]["x"](0);
+            points[0]["y"](0);
+            points[0]["error"](0);
+
+            for (var i = 0; i < 6; ++i){
+                if(!points[i+1]){
+                    points[i+1] = self._createPoint();
+                }
+
+                points[i+1]["idx"](i+2);
+                points[i+1]["x"]((self.bed_radius() * Math.sin((2 * Math.PI * i)/6)).toFixed(2));
+                points[i+1]["y"]((self.bed_radius() * Math.cos((2 * Math.PI * i)/6)).toFixed(2));
+                points[i+1]["error"](0);
+            }
+
+            self.probe_points(points);
+        }
 
         self.fromCurrentData = function(data){
             //var match665 = "/[lrz]:?\s+(\d+\.\d+)/i";

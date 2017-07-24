@@ -1,4 +1,4 @@
-<div>
+<div xmlns="http://www.w3.org/1999/html">
     <button data-bind="click: getSettings">{{ _('Get Setting') }}</button>
 
     Current Settings:<br />
@@ -9,4 +9,30 @@
     Trim X: <input type="text" class="form-control" data-bind="textInput: trim_x" /> <br />
     Trim Y: <input type="text" data-bind="textInput: trim_y" /> <br />
     Trim Z: <input type="text" data-bind="textInput: trim_z" /> <br />
+
+    <p />
+    Probe Points:<br />
+    Bed Radius: <input data-bind="textInput: bed_radius" />
+    <button data-bind="click:getProbePoints">{{ _('Get Probe Point') }}</button>
+
+    <table>
+        <thead>
+            <th></th>
+            <th>X</th>
+            <th>Y</th>
+            <th>Error</th>
+        </thead>
+        <tbody>
+            <!-- ko foreach: probe_points -->
+            <tr data-bind="template:{name: 'points'}"></tr>
+            <!-- /ko -->
+        </tbody>
+    </table>
 </div>
+
+<script type="text/html" id="points">
+    <td data-bind="text: idx"></td>
+    <td data-bind="text: x"></td>
+    <td data-bind="text: y"></td>
+    <td data-bind="text: error"></td>
+</script>
