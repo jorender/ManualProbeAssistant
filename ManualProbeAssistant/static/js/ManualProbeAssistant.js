@@ -7,6 +7,7 @@
 $(function() {
     function ManualProbeAssistantViewModel(parameters) {
         var self = this;
+        self.settingsViewModel = parameters[0];
 
         self._createPoint = function(){
             return {
@@ -27,6 +28,14 @@ $(function() {
         self.trim_y = ko.observable();
         self.trim_z = ko.observable();
         self.bed_radius = ko.observable();
+
+        self.onBeforeBinding = function(){
+            self.settings = self.settingsViewModel.settings;
+        }
+
+        self.onAfterBinding = function(){
+            self.bed_radius(self.settings.plugins.ManualProbeAssistant.bed_radius())
+        }
 
         self.getProbePoints = function(){
             var points = self.probe_points();
@@ -55,7 +64,6 @@ $(function() {
         }
 
         self.fromCurrentData = function(data){
-            //var match665 = "/[lrz]:?\s+(\d+\.\d+)/i";
             var expected_command_re = /M66[56]/;
 
             for (var i = 0; i < data.logs.length; i++){
@@ -101,15 +109,8 @@ $(function() {
         }
 
         self.getSettings = function(){
-
            var ret= OctoPrint.control.sendGcode('M503');
         };
-
-        // assign the injected parameters, e.g.:
-        // self.loginStateViewModel = parameters[0];
-        // self.settingsViewModel = parameters[1];
-
-
     }
 
     // view model class, parameters for constructor, container to bind to
@@ -117,9 +118,9 @@ $(function() {
         ManualProbeAssistantViewModel,
 
         // e.g. loginStateViewModel, settingsViewModel, ...
-        [ /* "loginStateViewModel", "settingsViewModel" */ ],
+        [ "settingsViewModel" /* "loginStateViewModel", "settingsViewModel" */ ],
 
         // e.g. #settings_plugin_ManualProbeAssistant, #tab_plugin_ManualProbeAssistant, ...
-        [ "#tab_plugin_ManualProbeAssistant" ]
+        [ "#settings_plugin_ManualProbeAssistant", "#tab_plugin_ManualProbeAssistant" ]
     ]);
 });

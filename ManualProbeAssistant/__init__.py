@@ -14,54 +14,58 @@ import octoprint.plugin
 
 class ManualProbeAssistantPlugin(octoprint.plugin.SettingsPlugin,
                                  octoprint.plugin.AssetPlugin,
-                                 octoprint.plugin.TemplatePlugin):
+                                 octoprint.plugin.TemplatePlugin,
+                                 octoprint.plugin.StartupPlugin):
 
-
-    # SettingsPlugin mixin
+    def on_after_startup(self):
+        message = "Manual Probe Assistant - Bed Radius - {}".format(self._settings.get(["bed_radius"]))
+        self._logger.info(message)
 
     def get_settings_defaults(self):
         return dict(
-            # put your plugin's default settings here
+            bed_radius="60"
+        )
+
+    def get_template_vars(self):
+        return dict(
+            bed_radius=self._settings.get(["bed_radius"])
         )
 
     # AssetPlugin mixin
-
     def get_assets(self):
-        # Define your plugin's asset files to automatically include in the
-        # core UI here.
-        return dict(
-            js=["js/ManualProbeAssistant.js"],
-            css=["css/ManualProbeAssistant.css"],
-            less=["less/ManualProbeAssistant.less"]
-        )
+            return dict(
+                js=["js/ManualProbeAssistant.js"],
+                css=["css/ManualProbeAssistant.css"],
+                less=["less/ManualProbeAssistant.less"]
+            )
 
     # Softwareupdate hook
 
     def get_update_information(self):
-        # Define the configuration for your plugin to use with the Software Update
-        # Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
-        # for details.
+    # Define the configuration for your plugin to use with the Software Update
+    # Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
+    # for details.
         return dict(
             ManualProbeAssistant=dict(
                 displayName="ManualProbeAssistant Plugin",
                 displayVersion=self._plugin_version,
 
-                # version check: github repository
+            # version check: github repository
                 type="github_release",
                 user="jorender",
                 repo="ManualProbeAssistant",
                 current=self._plugin_version,
 
-                # update method: pip
+            # update method: pip
                 pip="https://github.com/jorender/ManualProbeAssistant/archive/{target_version}.zip"
-            )
         )
+    )
 
 
 # If you want your plugin to be registered within OctoPrint under a different name than what you defined in setup.py
 # ("OctoPrint-PluginSkeleton"), you may define that here. Same goes for the other metadata derived from setup.py that
 # can be overwritten via __plugin_xyz__ control properties. See the documentation for that.
-__plugin_name__ = "ManualProbeAssistant Plugin"
+__plugin_name__ = "Manual Probe Assistant"
 
 
 def __plugin_load__():
