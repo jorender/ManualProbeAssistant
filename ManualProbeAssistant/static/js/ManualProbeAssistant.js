@@ -8,6 +8,7 @@ $(function() {
     function ManualProbeAssistantViewModel(parameters) {
         var self = this;
         self.settingsViewModel = parameters[0];
+        self.loginState = parameters[1];
 
         self._createPoint = function(){
             return {
@@ -20,6 +21,10 @@ $(function() {
 
         self.probe_points = ko.observableArray([]);
 
+        self.current_x = ko.observable();
+        self.current_y = ko.observable();
+        self.current_z = ko.observable();
+
         self.delta_l = ko.observable();
         self.delta_r = ko.observable();
         self.delta_z = ko.observable();
@@ -28,6 +33,25 @@ $(function() {
         self.trim_y = ko.observable();
         self.trim_z = ko.observable();
         self.bed_radius = ko.observable();
+
+        self.isOperational = ko.observable();
+        self.isPrinting = ko.observable();
+
+        self._processStateData = function(data){
+            self.isOperational(data.flags.operational);
+            self.isPrinting(data.flags.printing)
+        }
+
+        self.onEventPositionUpdate = function(data){
+            self.current_x(data.x);
+            self.current_y(data.y);
+            self.current_z(data.z);
+        }
+
+        self.onUserLoggedIn = function(){
+            self.getSettings();
+            self.getProbePoints();
+        }
 
         self.onBeforeBinding = function(){
             self.settings = self.settingsViewModel.settings;
@@ -64,6 +88,7 @@ $(function() {
         }
 
         self.fromCurrentData = function(data){
+            self._processStateData(data.state);
             var expected_command_re = /M66[56]/;
 
             for (var i = 0; i < data.logs.length; i++){
@@ -111,6 +136,10 @@ $(function() {
         self.getSettings = function(){
            var ret= OctoPrint.control.sendGcode('M503');
         };
+
+        self.getPosition = function(){
+            var ret = OctoPrint.control.sendGcode('M114');
+        }
     }
 
     // view model class, parameters for constructor, container to bind to
@@ -118,7 +147,7 @@ $(function() {
         ManualProbeAssistantViewModel,
 
         // e.g. loginStateViewModel, settingsViewModel, ...
-        [ "settingsViewModel" /* "loginStateViewModel", "settingsViewModel" */ ],
+        [ "settingsViewModel", "loginStateViewModel"],
 
         // e.g. #settings_plugin_ManualProbeAssistant, #tab_plugin_ManualProbeAssistant, ...
         [ "#settings_plugin_ManualProbeAssistant", "#tab_plugin_ManualProbeAssistant" ]

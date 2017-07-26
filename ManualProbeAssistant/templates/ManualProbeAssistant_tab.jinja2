@@ -1,34 +1,58 @@
-<div xmlns="http://www.w3.org/1999/html">
-    <button data-bind="click: getSettings">{{ _('Get Setting') }}</button>
+<div xmlns="http://www.w3.org/1999/html" data-bind="visible: loginState.isUser()">
+    <div id="delta_settings">
+        <button data-bind="click: getSettings, enable: isOperational() && !isPrinting() && loginState.isUser()">{{ _('Get Setting') }}</button>
 
-    Current Settings:<br />
-    Delta Arm Length: <input type="text" data-bind="textInput: delta_l" /> <br />
-    Delta Radius: <input type="text" data-bind="textInput: delta_r" /> <br />
-    Delta Max Height: <input type="text" data-bind="textInput: delta_z" /> <br />
-    <p/>
-    Trim X: <input type="text" class="form-control" data-bind="textInput: trim_x" /> <br />
-    Trim Y: <input type="text" data-bind="textInput: trim_y" /> <br />
-    Trim Z: <input type="text" data-bind="textInput: trim_z" /> <br />
+        Current Settings:<br />
+        Delta Arm Length: <input type="text" data-bind="textInput: delta_l" /> <br />
+        Delta Radius: <input type="text" data-bind="textInput: delta_r" /> <br />
+        Delta Max Height: <input type="text" data-bind="textInput: delta_z" /> <br />
+        <p/>
+        Trim X: <input type="text" class="form-control" data-bind="textInput: trim_x" /> <br />
+        Trim Y: <input type="text" data-bind="textInput: trim_y" /> <br />
+        Trim Z: <input type="text" data-bind="textInput: trim_z" /> <br />
+    </div>
+    <div id="probe_points">
+        Probe Points:<br />
+        Bed Radius: <input data-bind="textInput: bed_radius" />
+        <button data-bind="click:getProbePoints, enable: isOperational() && !isPrinting() && loginState.isUser()">{{ _('Get Probe Point') }}</button>
 
-    <p />
-    Probe Points:<br />
-    Bed Radius: <input data-bind="textInput: bed_radius" />
-    <button data-bind="click:getProbePoints">{{ _('Get Probe Point') }}</button>
+        <table>
+            <thead>
+                <th></th>
+                <th>X</th>
+                <th>Y</th>
+                <th>Error</th>
+            </thead>
+            <tbody>
+                <!-- ko foreach: probe_points -->
+                <tr data-bind="template:{name: 'points'}"></tr>
+                <!-- /ko -->
+            </tbody>
+        </table>
+    </div>
 
-    <table>
-        <thead>
-            <th></th>
-            <th>X</th>
-            <th>Y</th>
-            <th>Error</th>
-        </thead>
-        <tbody>
-            <!-- ko foreach: probe_points -->
-            <tr data-bind="template:{name: 'points'}"></tr>
-            <!-- /ko -->
-        </tbody>
-    </table>
+    <div id="current_position">
+        Current Position
+        <table>
+            <tbody>
+                <tr>
+                    <td>X:</td>
+                    <td><label data-bind="text: current_x"/></td>
+                </tr>
+                <tr>
+                    <td>Y:</td>
+                    <td><label data-bind="text: current_y" /></td>
+                </tr>
+                <tr>
+                    <td>Z:</td>
+                    <td><label data-bind="text: current_z"/></td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="btn" data-bind="click: getPosition">Position</button>
+    </div>
 </div>
+
 
 <script type="text/html" id="points">
     <td data-bind="text: idx"></td>
