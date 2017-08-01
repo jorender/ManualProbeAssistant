@@ -9,6 +9,7 @@ $(function() {
         var self = this;
         self.settingsViewModel = parameters[0];
         self.loginState = parameters[1];
+        self.control = parameters[2];
 
         self._createPoint = function(){
             return {
@@ -19,6 +20,7 @@ $(function() {
             }
         }
 
+        self.current_point = ko.observable(0);
         self.probe_points = ko.observableArray([]);
 
         self.current_x = ko.observable();
@@ -59,6 +61,57 @@ $(function() {
 
         self.onAfterBinding = function(){
             self.bed_radius(self.settings.plugins.ManualProbeAssistant.bed_radius())
+        }
+
+        self._setRelative = function(){
+            OctoPrint.control.sendGcode('G91');
+        }
+
+        self._setAbsolute = function(){
+            OctoPrint.control.sendGcode('G90');
+        }
+
+        self._getPosition = function(){
+            OctoPrint.control.sendGcode('M114');
+        }
+
+        self.next = function(){
+            self.probe_points()[self.current_point()]["error"](self.current_z());
+
+            self.control.sendJogCommand('z', 1, 10);
+            self._setAbsolute();
+
+            var newPoint = self.current_point();
+            self.current_point(newPoint + 1);
+
+            var point = self.probe_points()[self.current_point()];
+            var command = "G1 X" + point["x"]() +
+                " Y" + point["y"]() + " Z10";
+
+            OctoPrint.control.sendGcode(command);
+        }
+
+        self.move = function(value){
+            self.control.sendJogCommand('z', 1, value);
+            self._getPosition();
+        }
+
+        self.positionProbe = function(){
+            self._setAbsolute();
+
+            var point = self.probe_points()[self.current_point()];
+            var command = "G1 X" + point["x"]() +
+                " Y" + point["y"]() + " Z10";
+
+            OctoPrint.control.sendGcode(command);
+
+            self._getPosition();
+        }
+
+        self.homePrinter = function(){
+            self.control.sendHomeCommand(['z']);
+            OctoPrint.control.sendGcode('M114');
+            //var points = self.probe_points();
         }
 
         self.getProbePoints = function(){
@@ -147,7 +200,7 @@ $(function() {
         ManualProbeAssistantViewModel,
 
         // e.g. loginStateViewModel, settingsViewModel, ...
-        [ "settingsViewModel", "loginStateViewModel"],
+        [ "settingsViewModel", "loginStateViewModel", "controlViewModel"],
 
         // e.g. #settings_plugin_ManualProbeAssistant, #tab_plugin_ManualProbeAssistant, ...
         [ "#settings_plugin_ManualProbeAssistant", "#tab_plugin_ManualProbeAssistant" ]

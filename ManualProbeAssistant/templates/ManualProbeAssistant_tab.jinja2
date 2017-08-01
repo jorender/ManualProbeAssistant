@@ -51,6 +51,27 @@
         </table>
         <button type="btn" data-bind="click: getPosition">Position</button>
     </div>
+
+    <div id="home">
+        <button type="btn" data-bind="click: homePrinter">Home</button>
+    </div>
+
+    <div id="probe">
+        <input type="text" data-bind="text: current_point" />
+        <button type="btn" data-bind="click: positionProbe">Move Probe</button>
+
+        <div>
+            <button type="btn" data-bind="click: function() {move(.01)}">Up .01mm</button>
+            <button type="btn" data-bind="click: function() {move(.10)}">Up .10mm</button>
+            <button type="btn" data-bind="click: function() {move(1)}">Up 1mm</button>
+            <button type="btn" data-bind="click: function() {move(-1)}">Down 1mm</button>
+            <button type="btn" data-bind="click: function() {move(-.10)}">Down .1mm</button>
+            <button type="btn" data-bind="click: function() {move(-.01)}">Down .01mm</button>
+        </div>
+        <div>
+            <button type="btn" data-bind="click: next">Mark and Next</button>
+        </div>
+    </div>
 </div>
 
 
