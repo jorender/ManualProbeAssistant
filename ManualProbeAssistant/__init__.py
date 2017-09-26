@@ -10,12 +10,47 @@ from __future__ import absolute_import
 # Take a look at the documentation on what other plugin mixins are available.
 
 import octoprint.plugin
+import flask, json
 
 
 class ManualProbeAssistantPlugin(octoprint.plugin.SettingsPlugin,
                                  octoprint.plugin.AssetPlugin,
                                  octoprint.plugin.TemplatePlugin,
-                                 octoprint.plugin.StartupPlugin):
+                                 octoprint.plugin.StartupPlugin,
+                                 octoprint.plugin.BlueprintPlugin):
+
+    def is_blueprint_protected(self):
+        return False
+
+    @octoprint.plugin.BlueprintPlugin.route("/getprobe", methods=["GET"])
+    def calculate_probe(self):
+        # http://www.escher3d.com/pages/wizards/wizarddelta.php
+        # http://www.escher3d.com/pages/wizards/js/delta_calibration_wizard.js
+
+        # function calc()
+        # function DoDeltaCalibration() {
+
+        json_in = '"rod_length":216.5,' \
+                  '"radius": 98.52, ' \
+                  '"homed_height": 204.232, ' \
+                  '"old_trim_x": 1.290, ' \
+                  '"old_trim_y": 0.280, ' \
+                  '"old_trim_z": -1.570, ' \
+                  '[{"x": 0,"y": 0,"error": 5.8},' \
+                  '{"x": 0.00,"y": 60.00,"error": 5.84},' \
+                  '{"x": 51.96,"y": 30.00,' '"error": 5.86},' \
+                  '{"x": 51.96,"y": -30.00,"error": 5.8},' \
+                  '{"x": 0,"y": -60.00,"error": 5.68},' \
+                  '{"x": -51.96,"y": -30.00,"error": 5.57},' \
+                  '{"x": -51.96,"y": 30.00,"error": 5.69}]'
+
+        x_stop = 0
+        y_stop = 0
+        z_stop = 0
+
+        raw_json = json.loads(json_in)
+        point_one_x = raw_json[0]['x']
+        return flask.make_response(str(point_one_x), 200)
 
     def on_after_startup(self):
         message = "Manual Probe Assistant - Bed Radius - {}".format(self._settings.get(["bed_radius"]))
@@ -33,18 +68,17 @@ class ManualProbeAssistantPlugin(octoprint.plugin.SettingsPlugin,
 
     # AssetPlugin mixin
     def get_assets(self):
-            return dict(
-                js=["js/ManualProbeAssistant.js"],
-                css=["css/ManualProbeAssistant.css"],
-                less=["less/ManualProbeAssistant.less"]
-            )
+        return dict(
+            js=["js/ManualProbeAssistant.js"],
+            css=["css/ManualProbeAssistant.css"],
+            less=["less/ManualProbeAssistant.less"]
+        )
 
     # Softwareupdate hook
-
     def get_update_information(self):
-    # Define the configuration for your plugin to use with the Software Update
-    # Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
-    # for details.
+        # Define the configuration for your plugin to use with the Software Update
+        #  Plugin here. See https://github.com/foosel/OctoPrint/wiki/Plugin:-Software-Update
+        #  for details.
         return dict(
             ManualProbeAssistant=dict(
                 displayName="ManualProbeAssistant Plugin",
